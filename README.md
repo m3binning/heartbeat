@@ -1,53 +1,79 @@
-Heartbeat
+# Heartbeat
 ===============================================================================
 
-This is an example Prometheus client written in C.
-It generates a heatbeat message.
+This is a Prometheus client written in Rust that generates heartbeat messages.
 
-Build
+## Features
+
+- Prometheus metrics server on port 8000
+- Heartbeat counter that increments every second
+- Fuel gauge that decreases over time
+- Graceful shutdown with Ctrl+C
+- Docker containerization support
+
+## Build
 -------------------------------------------------------------------------------
 
-`docker build -f Containerfile -t heartbeat .`
+### Native Build
+```bash
+cargo build --release
+```
 
-Run
+### Docker Build
+```bash
+docker build -f Dockerfile -t heartbeat .
+```
+
+## Run
 -------------------------------------------------------------------------------
 
+### Native Run
+```bash
+cargo run
+```
+
+### Docker Run
 To view the CLI output, use the `-i` flag as below. To free up the terminal
-(e.g. only the metrics at the endpoint are of interest), dettach with the `-d`
+(e.g. only the metrics at the endpoint are of interest), detach with the `-d`
 flag.
 
-`docker run --rm --name heartbeat -tip 8000:8000 heartbeat`
-
-Stop
--------------------------------------------------------------------------------
-
-If running interactively, send a SIGINT with Ctrl+c.
-If running dettached, simply stop with: `docker stop heartbeat`
-
-Test
--------------------------------------------------------------------------------
-
-`curl http://localhost:8080/metrics` also available from web browsers near you.
-On an additional command or a refresh, the heartbeat metric should increase.
-
-Install
--------------------------------------------------------------------------------
-
-On the install target, the container may be run, or the client may be
-copied out of the container and run directly on the target host.
-
-To run directly on a target host, the dynamically linked dependencies for a
-Prometheus client will need to be available on the target host. For a dpkg-
-based host (e.g. Debian, Ubuntu, etc.) follow the commands in the
-`Containerfile`. For installing libraries in a non-Debian (but typical Linux
-FHS), i.e. RHEL, use the below steps in place of the base stage of the
-Containerfile.
-
-```Dockerfile
-FROM ${BASE_IMAGE}:${BASE_VERSION} as base
-ADD "https://github.com/digitalocean/prometheus-client-c/releases/download/v0.1.3/libprom-dev-0.1.3-Linux.tar.gz" ./
-RUN tar -xzf libprom*.tar.gz && \
-    rm libprom*.tar.gz && \
-    mv libprom*/lib/* /usr/lib/ && \
-    mv libprom*/include/* /usr/include
+```bash
+docker run --rm --name heartbeat -tip 8000:8000 heartbeat
 ```
+
+## Stop
+-------------------------------------------------------------------------------
+
+If running interactively, send a SIGINT with Ctrl+C.
+If running detached, simply stop with: `docker stop heartbeat`
+
+## Test
+-------------------------------------------------------------------------------
+
+```bash
+curl http://localhost:8000/metrics
+```
+
+Also available from web browsers. On an additional command or a refresh, 
+the heartbeat metric should increase and the fuel gauge should decrease.
+
+## Dependencies
+-------------------------------------------------------------------------------
+
+- **prometheus**: Rust Prometheus client library
+- **tokio**: Async runtime for Rust
+- **hyper**: HTTP server implementation
+
+## Architecture
+-------------------------------------------------------------------------------
+
+- Uses Rust's async/await for concurrent HTTP server and heartbeat loop
+- Memory safe by design with automatic memory management
+- Built-in error handling with Result types
+- Uses Cargo for dependency management
+- Graceful shutdown using tokio's signal handling
+
+## Metrics
+
+- `heartbeats`: Counter that increments every second
+- `fuel_gauge`: Gauge that starts at 3600 and decreases by 2 every second
