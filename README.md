@@ -1,5 +1,4 @@
 # Heartbeat
-===============================================================================
 
 This is a Prometheus client written in Rust that generates heartbeat messages.
 
@@ -12,7 +11,6 @@ This is a Prometheus client written in Rust that generates heartbeat messages.
 - Docker containerization support
 
 ## Build
--------------------------------------------------------------------------------
 
 ### Native Build
 ```bash
@@ -25,7 +23,6 @@ docker build -f Dockerfile -t heartbeat .
 ```
 
 ## Run
--------------------------------------------------------------------------------
 
 ### Native Run
 ```bash
@@ -42,13 +39,11 @@ docker run --rm --name heartbeat -tip 8000:8000 heartbeat
 ```
 
 ## Stop
--------------------------------------------------------------------------------
 
 If running interactively, send a SIGINT with Ctrl+C.
 If running detached, simply stop with: `docker stop heartbeat`
 
 ## Test
--------------------------------------------------------------------------------
 
 ```bash
 curl http://localhost:8000/metrics
@@ -58,20 +53,10 @@ Also available from web browsers. On an additional command or a refresh,
 the heartbeat metric should increase and the fuel gauge should decrease.
 
 ## Dependencies
--------------------------------------------------------------------------------
 
 - **prometheus**: Rust Prometheus client library
 - **tokio**: Async runtime for Rust
 - **hyper**: HTTP server implementation
-
-## Architecture
--------------------------------------------------------------------------------
-
-- Uses Rust's async/await for concurrent HTTP server and heartbeat loop
-- Memory safe by design with automatic memory management
-- Built-in error handling with Result types
-- Uses Cargo for dependency management
-- Graceful shutdown using tokio's signal handling
 
 ## Metrics
 
